@@ -1,17 +1,12 @@
-# MacWall
-<h1>Beta version MacWall - Realtime firewall </h1>
-<b>
-• Port Scanning Detection and monitorying  
-•Hostname resolution for suspicious IPs
-• WHOIS and geolocation lookup
-• VPN/Proxy detection
-• Risk scoring and threat assessment
-• Detailed intelligence logging
-• ARP spoofing detection and monitoring
-• Gateway integrity verification
-• MAC address conflict detection
-
-Much more to come. 
-This is collab with Cladue :-D I wish I could take credit , But I cannot . 
-
-</b>
+<h1><strong>MacWall - Realtime Firewall&nbsp;</strong></h1>
+<p>This project is in beta. I was looking for a firewall for my Mac Pro . Alot great ones out there, Although&nbsp; I rather be in the terminal if possible. Claude and I turned out this Real Time Firewall that does not ( should not ) need any pre&nbsp;prerequisites.</p>
+<p>Some features , such as real time Risk scoring and threat assessment and Detailed intelligence logging via Mac OSx and Linux terminal.</p>
+<p><strong> &bull; Port Scanning Detection and monitorying </strong></p>
+<p><strong>&bull;Hostname resolution for suspicious IPs </strong></p>
+<p><strong>&bull; WHOIS and geolocation lookup </strong></p>
+<p><strong>&bull; VPN/Proxy detection </strong></p>
+<p><strong>&bull; ARP spoofing detection and monitoring </strong></p>
+<p><strong>&bull; Gateway integrity verification </strong></p>
+<p><strong>&bull; MAC address conflict detection </strong></p>
+<p>&nbsp;</p>
+<p><strong>Much more to come. This is collab with Cladue :-D I wish I could take credit , But I cannot . </strong></p>
