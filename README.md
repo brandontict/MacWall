@@ -11,4 +11,9 @@
 <p><strong>&bull; Gateway integrity verification </strong></p>
 <p><strong>&bull; MAC address conflict detection </strong></p>
 <p>&nbsp;</p>
+<h3> Screenshots</h3>
+<p>I use Fish terminak </p>
 <p><strong>Much more to come. This is collab with Cladue :-D I wish I could take credit , But I cannot . </strong></p>
+<img width="650" height="862" alt="Macwall-1" src="https://github.com/user-attachments/assets/468ffb14-d669-44a4-a0d4-61d20c11466e" />
+<img width="667" height="772" alt="macwall2" src="https://github.com/user-attachments/assets/99f5afaa-c359-4489-b9b4-ffa4b51b3305" />
+
