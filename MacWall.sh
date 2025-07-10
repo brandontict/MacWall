@@ -38,7 +38,7 @@ GATEWAY_MAC_FILE="/tmp/gateway_mac_$"
 print_header() {
     clear
     echo -e "${WHITE}================================================${NC}"
-    echo -e "${WHITE}    ---- MacWall - Realtime 🔥Firewall ----${NC}"
+    echo -e "${WHITE}    ---- MacWall - Realtime 🔥Firewall🧱 ----${NC}"
     echo -e "${WHITE}    $(date)${NC}"
     echo -e "${WHITE}    Refresh every ${REFRESH_INTERVAL}s | Log: ${LOG_FILE}${NC}"
     echo -e "${WHITE}================================================${NC}"
