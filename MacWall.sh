@@ -1,11 +1,12 @@
 #!/bin/bash
 
-# Real-time Firewall Monitor for macOS --- ヽ༼ ຈل͜ຈ༼ ▀̿̿Ĺ̯̿̿▀̿ ̿༽Ɵ͆ل͜Ɵ͆ ༽ﾉ Meowww
-# Uses built-in tools: netstat, lsof, pfctl, nettop
+# Real-time Firewall Monitor for macOS with File Integrity Checking
+# Uses built-in tools: netstat, lsof, pfctl, nettop, md5, stat
 # Run with: chmod +x firewall_monitor.sh && ./firewall_monitor.sh
-# AI 	╰( ͡° ͜ʖ ͡° )つ──☆*:・ﾟ MAGIC . 
+# Claude pwnz us all 
+# ALL OF YOUR BASE BELONGS TO claude 
 
-# Colors for output
+# Colors for output; People dig colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -20,32 +21,79 @@ REFRESH_INTERVAL=3
 LOG_FILE="$HOME/firewall_monitor.log"
 SUSPICIOUS_PORTS=(22 23 25 53 80 110 143 443 993 995 1433 3306 3389 5432 6379)
 
-# Threat Intelligence Configuration
+# Threat Intelligence Configuration - Keep an eye on these foolz ... like for real 
 ENABLE_IP_ANALYSIS=true
 HIGH_RISK_COUNTRIES=("China" "Russia" "North Korea" "Iran" "Afghanistan")
 CLOUD_PROVIDERS=("amazonaws" "azure" "googlecloud" "digitalocean" "vultr" "linode" "hetzner")
 MAX_CONNECTIONS_PER_IP=10
 DEEP_ANALYSIS_MODE=false  # Set to true for more detailed analysis (slower)
 
-# ARP Spoof Detection Configuration
+# ARP Spoof Detection Configuration - This is a very real threat! ( Still )
 ENABLE_ARP_MONITORING=true
-ARP_TABLE_FILE="/tmp/arp_baseline_$"
+ARP_TABLE_FILE="/tmp/arp_baseline_$$"
 ARP_LOG_FILE="$HOME/arp_security.log"
 ARP_CHANGE_THRESHOLD=3  # Number of MAC changes before alerting
-GATEWAY_MAC_FILE="/tmp/gateway_mac_$"
+GATEWAY_MAC_FILE="/tmp/gateway_mac_$$"
 
-# Function to print header
+# File Integrity Monitoring Configuration
+ENABLE_FILE_INTEGRITY=true
+FILE_INTEGRITY_LOG="$HOME/file_integrity.log"
+BASELINE_DIR="$HOME/.macwall_baselines"
+INTEGRITY_CHECK_INTERVAL=5  # Check files every N monitoring cycles
+FILE_CHECK_COUNTER=0
+
+# Critical Files to Monitor (macOS specific) - Add files you need monitored . 
+CRITICAL_FILES=(
+    "/etc/passwd"
+    "/etc/hosts"
+    "/etc/ssh/sshd_config"
+    "/etc/ssh/ssh_config"
+    "/etc/sudoers"
+    "/etc/shells"
+    "/etc/resolv.conf"
+    "/etc/profile"
+    "/etc/bashrc"
+    "/System/Library/LaunchDaemons/com.openssh.sshd.plist"
+    "/Library/LaunchDaemons/com.apple.sshd.plist"
+    "/private/etc/authorization"
+    "/private/etc/pam.d/sudo"
+    "/usr/bin/sudo"
+    "/usr/bin/ssh"
+    "/usr/sbin/sshd"
+)
+
+# User-specific critical files
+USER_CRITICAL_FILES=(
+    "$HOME/.ssh/authorized_keys"
+    "$HOME/.ssh/config"
+    "$HOME/.bash_profile"
+    "$HOME/.bashrc"
+    "$HOME/.zshrc"
+    "$HOME/.profile"
+)
+
+# Application configuration files with potential credentials - keep the safe hidden
+APP_CONFIG_FILES=(
+    "/Library/Preferences/com.apple.loginwindow.plist"
+    "/System/Library/Preferences/com.apple.security.plist"
+    "$HOME/Library/Preferences/com.apple.security.plist"
+    "$HOME/.aws/credentials"
+    "$HOME/.docker/config.json"
+    "$HOME/.netrc"
+)
+
+# Function to print header dont forget to let them know what app this is
 print_header() {
     clear
     echo -e "${WHITE}================================================${NC}"
-    echo -e "${WHITE}    ---- MacWall - Realtime 🔥Firewall🧱 ----${NC}"
+    echo -e "${WHITE}    macwall Real-time Firewall Monitor${NC}"
     echo -e "${WHITE}    $(date)${NC}"
     echo -e "${WHITE}    Refresh every ${REFRESH_INTERVAL}s | Log: ${LOG_FILE}${NC}"
     echo -e "${WHITE}================================================${NC}"
     echo
 }
 
-# Function to check firewall status
+# Function to check firewall status finally 
 check_firewall_status() {
     echo -e "${CYAN}🔥 FIREWALL STATUS${NC}"
     echo "----------------------------------------"
@@ -525,7 +573,7 @@ detect_port_scans() {
     echo
 }
 
-# Function to log ARP security events
+# Function to log ARP security events as ARP will getcha ass everytime
 log_arp_alert() {
     local message=$1
     local timestamp=$(date)
@@ -568,8 +616,8 @@ detect_arp_spoofing() {
     echo -e "${RED}🚨 ARP SPOOF DETECTION${NC}"
     echo "----------------------------------------"
 
-    local current_arp="/tmp/current_arp_$"
-    local arp_changes="/tmp/arp_changes_$"
+    local current_arp="/tmp/current_arp_$$"
+    local arp_changes="/tmp/arp_changes_$$"
     local suspicious_found=false
 
     # Get current ARP table
@@ -612,7 +660,7 @@ detect_arp_spoofing() {
 
     # Check for MAC address conflicts (same IP, different MAC)
     echo -e "${WHITE}Checking for MAC address conflicts...${NC}"
-    local conflict_check="/tmp/conflict_check_$"
+    local conflict_check="/tmp/conflict_check_$$"
 
     # Extract IP and MAC pairs from both baseline and current
     {
@@ -660,7 +708,7 @@ detect_arp_spoofing() {
 # Function to check for rapid MAC address changes
 check_rapid_mac_changes() {
     local current_arp=$1
-    local change_log="/tmp/mac_changes_$"
+    local change_log="/tmp/mac_changes_$$"
 
     # Track MAC changes over time (simplified version)
     if [[ -f "$ARP_TABLE_FILE" ]]; then
@@ -776,6 +824,325 @@ show_arp_security_status() {
     echo
 }
 
+# Function to log file integrity alerts
+log_file_alert() {
+    local message=$1
+    local timestamp=$(date)
+    echo "$timestamp: $message" >> "$FILE_INTEGRITY_LOG"
+    log_alert "FILE INTEGRITY: $message"
+}
+
+# Function to initialize file integrity monitoring
+initialize_file_integrity() {
+    if [[ "$ENABLE_FILE_INTEGRITY" != "true" ]]; then
+        return
+    fi
+
+    echo -e "${CYAN}🔒 Initializing file integrity monitoring...${NC}"
+
+    # Create baseline directory
+    mkdir -p "$BASELINE_DIR"
+
+    # Create baseline for critical system files
+    create_file_baseline "${CRITICAL_FILES[@]}"
+
+    # Create baseline for user-specific files
+    create_file_baseline "${USER_CRITICAL_FILES[@]}"
+
+    # Create baseline for application config files
+    create_file_baseline "${APP_CONFIG_FILES[@]}"
+
+    touch "$FILE_INTEGRITY_LOG"
+    log_file_alert "File integrity monitoring initialized - baselines established"
+    echo -e "${GREEN}✓ File integrity baselines created${NC}"
+}
+
+# Function to create file baseline
+create_file_baseline() {
+    local files=("$@")
+
+    for file_path in "${files[@]}"; do
+        # Skip if file doesn't exist
+        if [[ ! -e "$file_path" ]]; then
+            continue
+        fi
+
+        # Create baseline entry
+        local baseline_file="$BASELINE_DIR/$(echo "$file_path" | sed 's/\//_/g').baseline"
+
+        # Get file information
+        local file_size=$(stat -f%z "$file_path" 2>/dev/null || echo "0")
+        local file_mtime=$(stat -f%m "$file_path" 2>/dev/null || echo "0")
+        local file_perms=$(stat -f%A "$file_path" 2>/dev/null || echo "0")
+        local file_owner=$(stat -f%u "$file_path" 2>/dev/null || echo "0")
+        local file_group=$(stat -f%g "$file_path" 2>/dev/null || echo "0")
+
+        # Calculate MD5 checksum (for files only)
+        local file_md5=""
+        if [[ -f "$file_path" ]]; then
+            file_md5=$(md5 -q "$file_path" 2>/dev/null || echo "FAILED")
+        fi
+
+        # Store baseline information
+        {
+            echo "FILE_PATH=$file_path"
+            echo "FILE_SIZE=$file_size"
+            echo "FILE_MTIME=$file_mtime"
+            echo "FILE_PERMS=$file_perms"
+            echo "FILE_OWNER=$file_owner"
+            echo "FILE_GROUP=$file_group"
+            echo "FILE_MD5=$file_md5"
+            echo "BASELINE_DATE=$(date)"
+        } > "$baseline_file"
+    done
+}
+
+# Function to check file integrity the password is monkeyp00000000000
+check_file_integrity() {
+    if [[ "$ENABLE_FILE_INTEGRITY" != "true" ]]; then
+        return
+    fi
+
+    # Only check files every N cycles to reduce overhead
+    ((FILE_CHECK_COUNTER++))
+    if [[ $FILE_CHECK_COUNTER -lt $INTEGRITY_CHECK_INTERVAL ]]; then
+        return
+    fi
+    FILE_CHECK_COUNTER=0
+
+    echo -e "${RED}🔒 FILE INTEGRITY CHECK${NC}"
+    echo "----------------------------------------"
+
+    local integrity_violations=0
+    local files_checked=0
+    local critical_violations=0
+
+    # Check all baseline files
+    if [[ -d "$BASELINE_DIR" ]]; then
+        for baseline_file in "$BASELINE_DIR"/*.baseline; do
+            if [[ ! -f "$baseline_file" ]]; then
+                continue
+            fi
+
+            # Load baseline data
+            source "$baseline_file"
+
+            ((files_checked++))
+
+            # Check if file still exists
+            if [[ ! -e "$FILE_PATH" ]]; then
+                echo -e "${RED}🚨 CRITICAL: File deleted - $FILE_PATH${NC}"
+                log_file_alert "CRITICAL: File deleted - $FILE_PATH"
+                ((integrity_violations++))
+                ((critical_violations++))
+                continue
+            fi
+
+            # Get current file information
+            local current_size=$(stat -f%z "$FILE_PATH" 2>/dev/null || echo "0")
+            local current_mtime=$(stat -f%m "$FILE_PATH" 2>/dev/null || echo "0")
+            local current_perms=$(stat -f%A "$FILE_PATH" 2>/dev/null || echo "0")
+            local current_owner=$(stat -f%u "$FILE_PATH" 2>/dev/null || echo "0")
+            local current_group=$(stat -f%g "$FILE_PATH" 2>/dev/null || echo "0")
+
+            local current_md5=""
+            if [[ -f "$FILE_PATH" ]]; then
+                current_md5=$(md5 -q "$FILE_PATH" 2>/dev/null || echo "FAILED")
+            fi
+
+            local file_changed=false
+            local change_details=()
+
+            # Check for changes
+            if [[ "$current_size" != "$FILE_SIZE" ]]; then
+                change_details+=("Size: $FILE_SIZE -> $current_size bytes")
+                file_changed=true
+            fi
+
+            if [[ "$current_mtime" != "$FILE_MTIME" ]]; then
+                local old_date=$(date -r "$FILE_MTIME" 2>/dev/null || echo "Unknown")
+                local new_date=$(date -r "$current_mtime" 2>/dev/null || echo "Unknown")
+                change_details+=("Modified: $old_date -> $new_date")
+                file_changed=true
+            fi
+
+            if [[ "$current_perms" != "$FILE_PERMS" ]]; then
+                change_details+=("Permissions: $FILE_PERMS -> $current_perms")
+                file_changed=true
+            fi
+
+            if [[ "$current_owner" != "$FILE_OWNER" ]]; then
+                change_details+=("Owner: $FILE_OWNER -> $current_owner")
+                file_changed=true
+            fi
+
+            if [[ "$current_group" != "$FILE_GROUP" ]]; then
+                change_details+=("Group: $FILE_GROUP -> $current_group")
+                file_changed=true
+            fi
+
+            if [[ -n "$FILE_MD5" ]] && [[ "$current_md5" != "$FILE_MD5" ]] && [[ "$current_md5" != "FAILED" ]]; then
+                change_details+=("MD5: $FILE_MD5 -> $current_md5")
+                file_changed=true
+                ((critical_violations++))
+            fi
+
+            # Report changes
+            if [[ "$file_changed" == "true" ]]; then
+                ((integrity_violations++))
+
+                # Determine threat level based on file type and changes
+                local threat_level="MEDIUM"
+                if [[ "$FILE_PATH" =~ (passwd|sudoers|sshd_config|authorized_keys) ]] || [[ -n "$FILE_MD5" && "$current_md5" != "$FILE_MD5" ]]; then
+                    threat_level="HIGH"
+                fi
+
+                case $threat_level in
+                    "HIGH")
+                        echo -e "${RED}🚨 HIGH RISK: $FILE_PATH${NC}"
+                        ;;
+                    "MEDIUM")
+                        echo -e "${YELLOW}⚠ MEDIUM RISK: $FILE_PATH${NC}"
+                        ;;
+                esac
+
+                # Display change details
+                for detail in "${change_details[@]}"; do
+                    echo -e "  ${WHITE}• $detail${NC}"
+                done
+
+                # Log the violation
+                log_file_alert "$threat_level: $FILE_PATH - ${change_details[*]}"
+
+                # Update baseline if not a critical security file
+                if [[ ! "$FILE_PATH" =~ (passwd|sudoers|sshd_config|authorized_keys) ]]; then
+                    echo -e "  ${CYAN}ℹ Updating baseline for $FILE_PATH${NC}"
+                    # Update the baseline file
+                    {
+                        echo "FILE_PATH=$FILE_PATH"
+                        echo "FILE_SIZE=$current_size"
+                        echo "FILE_MTIME=$current_mtime"
+                        echo "FILE_PERMS=$current_perms"
+                        echo "FILE_OWNER=$current_owner"
+                        echo "FILE_GROUP=$current_group"
+                        echo "FILE_MD5=$current_md5"
+                        echo "BASELINE_DATE=$(date)"
+                    } > "$baseline_file"
+                fi
+            fi
+
+            # Clear variables for next iteration
+            unset FILE_PATH FILE_SIZE FILE_MTIME FILE_PERMS FILE_OWNER FILE_GROUP FILE_MD5 BASELINE_DATE
+        done
+    fi
+
+    # Summary
+    echo -e "${WHITE}Files checked: $files_checked${NC}"
+    if [[ $integrity_violations -eq 0 ]]; then
+        echo -e "${GREEN}✓ No file integrity violations detected${NC}"
+    else
+        echo -e "${YELLOW}⚠ Total violations: $integrity_violations${NC}"
+        if [[ $critical_violations -gt 0 ]]; then
+            echo -e "${RED}🚨 Critical violations: $critical_violations${NC}"
+            echo -e "${RED}   Recommend immediate investigation!${NC}"
+        fi
+    fi
+
+    echo
+}
+
+# Function to show file integrity status
+show_file_integrity_status() {
+    if [[ "$ENABLE_FILE_INTEGRITY" != "true" ]]; then
+        return
+    fi
+
+    echo -e "${CYAN}🔒 FILE INTEGRITY STATUS${NC}"
+    echo "----------------------------------------"
+
+    # Count monitored files
+    local monitored_count=0
+    if [[ -d "$BASELINE_DIR" ]]; then
+        monitored_count=$(ls -1 "$BASELINE_DIR"/*.baseline 2>/dev/null | wc -l)
+    fi
+    echo -e "${WHITE}Monitored files: $monitored_count${NC}"
+
+    # Show recent integrity alerts count
+    if [[ -f "$FILE_INTEGRITY_LOG" ]]; then
+        local alert_count=$(grep "$(date +%Y-%m-%d)" "$FILE_INTEGRITY_LOG" 2>/dev/null | wc -l)
+        if [[ $alert_count -gt 0 ]]; then
+            echo -e "${YELLOW}Integrity alerts today: $alert_count${NC}"
+        else
+            echo -e "${GREEN}No integrity violations today${NC}"
+        fi
+    fi
+
+    # Show next check countdown
+    local next_check=$((INTEGRITY_CHECK_INTERVAL - FILE_CHECK_COUNTER))
+    echo -e "${WHITE}Next integrity check in: $next_check cycles${NC}"
+
+    echo
+}
+
+# Function to detect suspicious file modifications
+detect_suspicious_modifications() {
+    if [[ "$ENABLE_FILE_INTEGRITY" != "true" ]]; then
+        return
+    fi
+
+    echo -e "${RED}🕵️ SUSPICIOUS FILE ACTIVITY${NC}"
+    echo "----------------------------------------"
+
+    # Check for recently modified critical system files
+    echo -e "${WHITE}Checking for recent modifications to critical files...${NC}"
+
+    local suspicious_found=false
+    local current_time=$(date +%s)
+    local check_window=3600  # Check last hour
+
+    for file_path in "${CRITICAL_FILES[@]}" "${USER_CRITICAL_FILES[@]}"; do
+        if [[ -e "$file_path" ]]; then
+            local file_mtime=$(stat -f%m "$file_path" 2>/dev/null || echo "0")
+            local time_diff=$((current_time - file_mtime))
+
+            if [[ $time_diff -lt $check_window ]]; then
+                echo -e "${YELLOW}⚠ Recently modified: $file_path${NC}"
+                echo -e "  ${WHITE}Modified: $(date -r "$file_mtime")${NC}"
+                log_file_alert "RECENT MODIFICATION: $file_path modified $(date -r "$file_mtime")"
+                suspicious_found=true
+            fi
+        fi
+    done
+
+    # Check for new files in critical directories
+    echo -e "${WHITE}Checking for new files in critical directories...${NC}"
+
+    local critical_dirs=("/etc" "/usr/bin" "/usr/sbin" "/Library/LaunchDaemons" "/System/Library/LaunchDaemons")
+
+    for dir_path in "${critical_dirs[@]}"; do
+        if [[ -d "$dir_path" ]]; then
+            # Find files modified in the last hour
+            local new_files=$(find "$dir_path" -maxdepth 1 -type f -mtime -1h 2>/dev/null | head -5)
+            if [[ -n "$new_files" ]]; then
+                echo -e "${YELLOW}⚠ Recent files in $dir_path:${NC}"
+                echo "$new_files" | while read new_file; do
+                    if [[ -n "$new_file" ]]; then
+                        echo -e "  ${WHITE}• $new_file${NC}"
+                        log_file_alert "NEW FILE: $new_file in critical directory"
+                        suspicious_found=true
+                    fi
+                done
+            fi
+        fi
+    done
+
+    if [[ "$suspicious_found" == "false" ]]; then
+        echo -e "${GREEN}✓ No suspicious file activity detected${NC}"
+    fi
+
+    echo
+}
+
 # Main monitoring loop
 main_loop() {
     while true; do
@@ -787,6 +1154,9 @@ main_loop() {
         detect_port_scans
         show_arp_security_status
         detect_arp_spoofing
+        show_file_integrity_status
+        check_file_integrity
+        detect_suspicious_modifications
         show_bandwidth
         show_firewall_rules
 
@@ -795,6 +1165,9 @@ main_loop() {
         echo -e "${WHITE}Threat Intel Log: $HOME/firewall_threat_intel.log${NC}"
         if [[ "$ENABLE_ARP_MONITORING" == "true" ]]; then
             echo -e "${WHITE}ARP Security Log: ${ARP_LOG_FILE}${NC}"
+        fi
+        if [[ "$ENABLE_FILE_INTEGRITY" == "true" ]]; then
+            echo -e "${WHITE}File Integrity Log: ${FILE_INTEGRITY_LOG}${NC}"
         fi
         if [[ "$ENABLE_IP_ANALYSIS" == "true" ]]; then
             echo -e "${CYAN}🔍 IP Analysis: ENABLED${NC}"
@@ -805,6 +1178,11 @@ main_loop() {
             echo -e "${CYAN}🛡️ ARP Monitoring: ENABLED${NC}"
         else
             echo -e "${YELLOW}🛡️ ARP Monitoring: DISABLED${NC}"
+        fi
+        if [[ "$ENABLE_FILE_INTEGRITY" == "true" ]]; then
+            echo -e "${CYAN}🔒 File Integrity: ENABLED${NC}"
+        else
+            echo -e "${YELLOW}🔒 File Integrity: DISABLED${NC}"
         fi
 
         sleep $REFRESH_INTERVAL
@@ -820,10 +1198,14 @@ cleanup() {
     if [[ "$ENABLE_ARP_MONITORING" == "true" ]]; then
         echo "ARP security log: $ARP_LOG_FILE"
     fi
+    if [[ "$ENABLE_FILE_INTEGRITY" == "true" ]]; then
+        echo "File integrity log: $FILE_INTEGRITY_LOG"
+        echo "Baselines saved in: $BASELINE_DIR"
+    fi
 
     # Clean up temporary files
     rm -f "$ARP_TABLE_FILE" "$GATEWAY_MAC_FILE" 2>/dev/null
-    rm -f /tmp/suspicious_ips_$ /tmp/current_arp_$ /tmp/arp_changes_$ /tmp/conflict_check_$ /tmp/mac_changes_$ 2>/dev/null
+    rm -f /tmp/suspicious_ips_$$ /tmp/current_arp_$$ /tmp/arp_changes_$$ /tmp/conflict_check_$$ /tmp/mac_changes_$$ 2>/dev/null
 
     echo -e "${GREEN}Stay vigilant! 🛡️${NC}"
     exit 0
@@ -842,7 +1224,7 @@ else
     read
 fi
 
-# Display threat intelligence banner
+# Display enhanced security banner
 echo -e "${CYAN}🕵️  ENHANCED SECURITY FEATURES ENABLED${NC}"
 echo -e "${WHITE}• Hostname resolution for suspicious IPs${NC}"
 echo -e "${WHITE}• WHOIS and geolocation lookup${NC}"
@@ -854,25 +1236,41 @@ if [[ "$ENABLE_ARP_MONITORING" == "true" ]]; then
     echo -e "${WHITE}• Gateway integrity verification${NC}"
     echo -e "${WHITE}• MAC address conflict detection${NC}"
 fi
+if [[ "$ENABLE_FILE_INTEGRITY" == "true" ]]; then
+    echo -e "${WHITE}• File integrity monitoring with MD5 checksums${NC}"
+    echo -e "${WHITE}• Critical system file protection${NC}"
+    echo -e "${WHITE}• SSH and configuration file monitoring${NC}"
+    echo -e "${WHITE}• Credential and keychain protection${NC}"
+fi
 echo -e "${WHITE}• 'Know Thy Enemy' - Sun Tzu would be proud! 🥷${NC}"
 echo
 echo -e "${YELLOW}Note: External lookups may add slight delay to analysis${NC}"
 if [[ "$ENABLE_ARP_MONITORING" == "true" ]]; then
     echo -e "${YELLOW}ARP monitoring will establish baseline on first run${NC}"
 fi
+if [[ "$ENABLE_FILE_INTEGRITY" == "true" ]]; then
+    echo -e "${YELLOW}File integrity monitoring will create baselines on first run${NC}"
+fi
 echo "Press Enter to begin monitoring..."
 read
 
-# Create log files
+# Create log files . Brohs need logs
 touch "$LOG_FILE"
 if [[ "$ENABLE_ARP_MONITORING" == "true" ]]; then
     touch "$ARP_LOG_FILE"
 fi
-log_alert "Firewall monitor started"
+if [[ "$ENABLE_FILE_INTEGRITY" == "true" ]]; then
+    touch "$FILE_INTEGRITY_LOG"
+fi
+log_alert "Enhanced firewall monitor started with file integrity checking"
 
-# Initialize ARP monitoring
+# Initialize monitoring systems . Let us begin
 if [[ "$ENABLE_ARP_MONITORING" == "true" ]]; then
     initialize_arp_baseline
+fi
+
+if [[ "$ENABLE_FILE_INTEGRITY" == "true" ]]; then
+    initialize_file_integrity
 fi
 
 # Start main loop
