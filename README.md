@@ -1,21 +1,71 @@
 <p>&nbsp;</p>
-<p style="text-align: left;"># Real-time Firewall Monitor for macOS<br /># Uses built-in tools: netstat, lsof, pfctl, nettop<br /># Run with: chmod +x Macwall.sh &amp;&amp; ./Macwall.sh</p>
+<p style="text-align: left;"># Real-time Firewall Monitor for macOS<br /># Uses built-in tools: netstat, lsof, pfctl, nettop</br></p>
 <h1><strong>MacWall - Realtime 🔥Firewall🧱&nbsp;</strong></h1>
 <p>This project is in beta. I was looking for a firewall for my Mac Pro . Alot great ones out there, Although&nbsp; I rather be in the terminal if possible. Claude and I turned out this Real Time Firewall that does not ( should not ) need any pre&nbsp;prerequisites.</p>
 <p>Some features , such as real time Risk scoring and threat assessment and Detailed intelligence logging via Mac OSx and Linux terminal.</p>
-<p><strong> &bull; Port Scanning Detection and monitorying </strong></p>
-<p><strong>&bull;Hostname resolution for suspicious IPs </strong></p>
-<p><strong>&bull; WHOIS and geolocation lookup </strong></p>
-<p><strong>&bull; VPN/Proxy detection </strong></p>
-<p><strong>&bull; ARP spoofing detection and monitoring </strong></p>
-<p><strong>&bull; Gateway integrity verification </strong></p>
-<p><strong>&bull; MAC address conflict detection </strong></p>
 <p>&nbsp;</p>
 <h3> Screenshots</h3>
 <p>I use Fish shell <a href="https://fishshell.com/"> Grab it here</a> </p>
-<p><strong>Much more to come. This is collab with Cladue :-D I wish I could take credit , But I cannot . </strong></p>
+<p><strong>This is collab with Cladue :-D I wish I could take credit , But I cannot . Updates to come </strong></p>
 <h3>** Recent updates ** </h3>
-<p>File integrity checking system that monitors critical macOS system files for tampering</p>
-<img width="650" height="862" alt="Macwall-1" src="https://github.com/user-attachments/assets/468ffb14-d669-44a4-a0d4-61d20c11466e" />
-<img width="667" height="772" alt="macwall2" src="https://github.com/user-attachments/assets/99f5afaa-c359-4489-b9b4-ffa4b51b3305" />
+
+Macwall monitoring script with a comprehensive file integrity checking system! Here are the key additions:
+
+🌐 Network Security (original functionality)
+🛡️ ARP Spoofing Protection
+🔒 File System Integrity (new addition)
+
+Usage: The script will automatically create baselines on first run and begin monitoring. Any tampering with critical files will be immediately detected and logged with detailed change information! Run with: sudo chmod +x Macwall.sh &amp;&amp; ./Macwall.sh . 
+
+
+🔒 New File Integrity Features Added:
+
+Configuration Variables
+
+ENABLE_FILE_INTEGRITY=true - Master switch for file integrity monitoring
+INTEGRITY_CHECK_INTERVAL=5 - Checks files every N monitoring cycles (reduces overhead)
+Dedicated log file: $HOME/file_integrity.log
+Baseline storage directory: $HOME/.macwall_baselines
+
+Critical Files Being Monitored
+System Security Files:
+
+/etc/passwd, /etc/sudoers, /etc/hosts
+/etc/ssh/sshd_config, /etc/ssh/ssh_config
+/etc/shells, /etc/resolv.conf
+System launch daemons and authorization files
+
+User-Specific Files:
+
+~/.ssh/authorized_keys, ~/.ssh/config
+Shell profiles (.bashrc, .zshrc, .profile)
+
+Application Credentials:
+
+~/.aws/credentials, ~/.docker/config.json
+~/.netrc and other credential files
+
+Detection Capabilities
+<p>
+✅ MD5 Checksum Verification - Detects content tampering
+✅ Modification Time Tracking - Identifies when files changed
+✅ Permission/Ownership Changes - Detects privilege escalation
+✅ File Deletion Detection - Alerts when critical files disappear
+✅ Recent Activity Monitoring - Finds suspicious recent changes
+✅ Risk-Based Alerting - HIGH risk for auth files, MEDIUM for others
+</p>
+Key Functions Added
+
+initialize_file_integrity() - Creates baseline checksums on first run
+check_file_integrity() - Compares current state vs baseline
+detect_suspicious_modifications() - Finds recently changed critical files
+show_file_integrity_status() - Displays monitoring status
+
+Smart Features
+
+Baseline Auto-Update: Non-critical files get updated baselines automatically
+Critical File Protection: Security files (passwd, sudoers, SSH keys) require manual investigation
+Performance Optimized: Only checks files every N cycles to reduce system load
+Comprehensive Logging: Detailed violation logs with timestamps and change details
+
 
