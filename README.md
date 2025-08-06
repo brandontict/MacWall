@@ -5,11 +5,12 @@
 <p>Some features , such as real time Risk scoring and threat assessment and Detailed intelligence logging via Mac OSx and Linux terminal.</p>
 <p>&nbsp;</p>
 <h3> Screenshots</h3>
-<p>I use Fish shell <a href="https://fishshell.com/"> Grab it here</a> </p>
-<p><strong>This is collab with Cladue :-D I wish I could take credit , But I cannot . Updates to come </strong></p>
+
+
+<p><strong>This is collab with Cladue :-D I wish I could take FULL credit , But I cannot . </strong></p>
 <h3>** Recent updates ** </h3>
 
-Macwall monitoring script with a comprehensive file integrity checking system! Here are the key additions:
+<b>Macwall monitoring script with a comprehensive file integrity checking system! Here are the key additions:</b>
 
 🌐 Network Security (original functionality)
 🛡️ ARP Spoofing Protection
