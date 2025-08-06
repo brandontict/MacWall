@@ -4,12 +4,6 @@
 <p>This project is in beta. I was looking for a firewall for my Mac Pro . Alot great ones out there, Although&nbsp; I rather be in the terminal if possible. Claude and I turned out this Real Time Firewall that does not ( should not ) need any pre&nbsp;prerequisites.</p>
 <p>Some features , such as real time Risk scoring and threat assessment and Detailed intelligence logging via Mac OSx and Linux terminal.</p>
 <p>&nbsp;</p>
-<h3> Screenshots</h3>
-
-
-<p><strong>This is collab with Cladue :-D I wish I could take FULL credit , But I cannot . </strong></p>
-<h3>** Recent updates ** </h3>
-
 <b>Macwall monitoring script with a comprehensive file integrity checking system! Here are the key additions:</b>
 
 🌐 Network Security (original functionality)
@@ -80,4 +74,10 @@ Performance Optimized: Only checks files every N cycles to reduce system load
 
 Comprehensive Logging: Detailed violation logs with timestamps and change details
 
+<h3> Screenshots</h3>
+<img width="423" height="225" alt="image" src="https://github.com/user-attachments/assets/c5f9b804-cfef-487a-9704-27cec73726df" />
+<img width="472" height="352" alt="image" src="https://github.com/user-attachments/assets/b49f135b-a154-4a68-bf03-4558cbaa2962" />
+<img width="633" height="785" alt="image" src="https://github.com/user-attachments/assets/bad635f3-5701-4ed3-a2eb-ff4e23655cd4" />
+<img width="450" height="321" alt="image" src="https://github.com/user-attachments/assets/5cc8a759-9e7f-4564-acc5-719fc0fe9109" />
 
+<p><strong>This is collab with Cladue :-D I wish I could take FULL credit , But I cannot . </strong></p>
