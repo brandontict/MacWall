@@ -45,27 +45,38 @@ Application Credentials:
 ~/.aws/credentials, ~/.docker/config.json
 ~/.netrc and other credential files
 
-Detection Capabilities
+<h2>Detection Capabilities</h2>
 <p>
 ✅ MD5 Checksum Verification - Detects content tampering
-✅ Modification Time Tracking - Identifies when files changed
+
+  ✅ Modification Time Tracking - Identifies when files changed
+
 ✅ Permission/Ownership Changes - Detects privilege escalation
+
 ✅ File Deletion Detection - Alerts when critical files disappear
+
 ✅ Recent Activity Monitoring - Finds suspicious recent changes
+
 ✅ Risk-Based Alerting - HIGH risk for auth files, MEDIUM for others
 </p>
-Key Functions Added
+<h2>Key Functions Added</h2>
 
 initialize_file_integrity() - Creates baseline checksums on first run
+
 check_file_integrity() - Compares current state vs baseline
+
 detect_suspicious_modifications() - Finds recently changed critical files
+
 show_file_integrity_status() - Displays monitoring status
 
-Smart Features
+<h2>Smart Features</h2>
 
 Baseline Auto-Update: Non-critical files get updated baselines automatically
+
 Critical File Protection: Security files (passwd, sudoers, SSH keys) require manual investigation
+
 Performance Optimized: Only checks files every N cycles to reduce system load
+
 Comprehensive Logging: Detailed violation logs with timestamps and change details
 
 
