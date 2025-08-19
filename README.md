@@ -1,7 +1,7 @@
 <p>&nbsp;</p>
 <p style="text-align: left;"># Real-time Firewall Monitor for macOS<br /># Uses built-in tools: netstat, lsof, pfctl, nettop</br></p>
 <h1><strong>MacWall - Realtime 🔥Firewall🧱&nbsp;</strong></h1>
-<p>This project is in beta. I was looking for a firewall for my Mac Pro . Alot great ones out there, Although&nbsp; I rather be in the terminal if possible. Claude and I turned out this Real Time Firewall that does not ( should not ) need any pre&nbsp;prerequisites.</p>
+<p>This project is in beta. I was looking for a firewall for my Mac Pro . Alot great ones out there, Although&nbsp; I rather be in the terminal if possible. Also needed something to document and log suspicous IP / Requests, That I could show to customers. Claude and I turned out this Real Time Firewall that does not ( should not ) need any pre&nbsp;prerequisites. ( Going to be doing something similar with powershell ) .</p>
 <p>Some features , such as real time Risk scoring and threat assessment and Detailed intelligence logging via Mac OSx and Linux terminal.</p>
 <p>&nbsp;</p>
 <b>Macwall monitoring script with a comprehensive file integrity checking system! Here are the key additions:</b>
@@ -80,4 +80,4 @@ Comprehensive Logging: Detailed violation logs with timestamps and change detail
 <img width="633" height="785" alt="image" src="https://github.com/user-attachments/assets/bad635f3-5701-4ed3-a2eb-ff4e23655cd4" />
 <img width="450" height="321" alt="image" src="https://github.com/user-attachments/assets/5cc8a759-9e7f-4564-acc5-719fc0fe9109" />
 
-<p><strong>This is collab with Cladue :-D I wish I could take FULL credit , But I cannot . </strong></p>
+<p><strong>This is collab with Cladue :-D I wish I could take FULL credit , But I cannot . -Brandont  </strong></p>
